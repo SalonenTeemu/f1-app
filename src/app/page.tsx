@@ -1,4 +1,11 @@
 import { Race } from "./types/types";
+import {
+  isRaceFinished,
+  getNextRaceIndex,
+  formatDateTime,
+} from "./utils/utils";
+import ScrollToTopButton from "@/app/components/scrollToTopButton";
+import ScrollToNextRaceButton from "./components/scrollToNextRaceButton";
 
 export default async function Home() {
   let raceScheduleData: Race[] | null = null;
@@ -17,45 +24,82 @@ export default async function Home() {
   }
 
   if (error) {
-    return <div>Error: {error}</div>;
+    return <div className="text-slate-50">Error: {error}</div>;
   }
 
   if (!raceScheduleData || raceScheduleData.length === 0) {
-    return <div>No races found</div>;
+    return <div className="text-slate-50">No races found</div>;
   }
 
+  const nextRaceIndex = getNextRaceIndex(raceScheduleData);
+
   return (
-    <div className="container mx-auto p-4">
-      <div>
-        Todo: Has race been raced?, show current/next race, to the top button,
-        styling, favicon
+    <main className="w-full min-h-screen relative bg-slate-950 text-slate-50 selection:bg-lime-500 scroll-smooth">
+      <div className="container mx-auto p-4">
+        <div className="flex justify-between items-center mb-4">
+          <h1 className="text-3xl font-bold">Formula 1 2024 Race Schedule</h1>
+          <div className="flex items-center">
+            <div className="flex items-center mr-4">
+              <div className="w-8 h-8 rounded-md bg-zinc-700 border border-slate-50 mr-2"></div>
+              <span>Finished Race</span>
+            </div>
+            <div className="flex items-center mr-4">
+              <div className="w-8 h-8 rounded-md bg-lime-500 border border-slate-50 mr-2"></div>
+              <span>Next Race</span>
+            </div>
+            <div className="flex items-center mr-4">
+              <div className="w-8 h-8 rounded-md bg-slate-950 border border-slate-50 mr-2"></div>
+              <span>Upcoming Race</span>
+            </div>
+          </div>
+        </div>
+        <ul className="grid gap-4">
+          {raceScheduleData.map((race, index) => {
+            const formattedDateTime = formatDateTime(race.date, race.time);
+
+            return (
+              <li
+                key={index}
+                id={`race${index + 1}`}
+                className={`border p-4 rounded-md ${
+                  isRaceFinished(race.date) ? "bg-zinc-700" : ""
+                } ${
+                  index === nextRaceIndex ? "bg-lime-500 text-slate-950" : ""
+                }`}
+              >
+                <h2 className="text-xl font-bold">
+                  {race.round}. {race.raceName}
+                </h2>
+                <p>Date: {formattedDateTime.date}</p>
+                <p>Time: {formattedDateTime.time}</p>
+                <p>
+                  Location: {race.Circuit.Location.locality},{" "}
+                  {race.Circuit.Location.country}
+                </p>
+                <p>Circuit: {race.Circuit.circuitName}</p>
+              </li>
+            );
+          })}
+        </ul>
+        <ScrollToTopButton />
       </div>
-      <h1 className="text-3xl font-bold mb-4">F1 Schedule</h1>
-      <ul className="grid gap-4">
-        {raceScheduleData.map((race, index) => (
-          <li key={index} className="border p-4 rounded-md">
-            <h2 className="text-xl font-bold">{race.raceName}</h2>
-            <p>Date: {race.date}</p>
-            <p>Round: {race.round}</p>
-            <p>
-              Location: {race.Circuit.Location.locality},{" "}
-              {race.Circuit.Location.country}
-            </p>
-            <p>Circuit: {race.Circuit.circuitName}</p>
-          </li>
-        ))}
-      </ul>
-    </div>
+      <ScrollToNextRaceButton nextRaceIndex={nextRaceIndex} />
+    </main>
   );
 }
 
+/**
+ * Fetches the race schedule data from external ergast f1 API.
+ * @returns {Promise<Race[]>} A promise that resolves to an array of Race objects.
+ * @throws {Error} If fetching the data fails or if the data format is invalid.
+ */
 async function getRaceScheduleData(): Promise<Race[]> {
   const res = await fetch("https://ergast.com/api/f1/current.json");
   if (!res.ok) {
-    throw new Error("Failed to fetch data");
+    throw new Error("Failed to fetch race data");
   }
   const data = await res.json();
-  console.log("Fetched data:", data);
+  console.log("Fetched race data");
 
   if (data.MRData && data.MRData.RaceTable && data.MRData.RaceTable.Races) {
     return data.MRData.RaceTable.Races.map((race: Race) => ({
@@ -63,6 +107,7 @@ async function getRaceScheduleData(): Promise<Race[]> {
       round: race.round,
       raceName: race.raceName,
       date: race.date,
+      time: race.time,
       Circuit: {
         circuitName: race.Circuit.circuitName,
         Location: {
