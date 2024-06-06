@@ -34,14 +34,23 @@ export function getNextRaceIndex(races: Race[]): number {
 export function formatDateTime(date: string, time: string): any {
   const utcDateTime = new Date(`${date}T${time}`);
 
-  const localDateTime = new Date(utcDateTime.getTime() + 3 * 60 * 60 * 1000);
+  // Check if the date is greater than or equal to October 27th when clocks are turned
+  const isAfterClockChange =
+    utcDateTime >= new Date(`${utcDateTime.getUTCFullYear()}-10-27T00:00:00`);
+
+  // Adjust the offset accordingly
+  const offset = isAfterClockChange ? 2 : 3;
+
+  const localDateTime = new Date(
+    utcDateTime.getTime() + offset * 60 * 60 * 1000
+  );
 
   const formattedDate = `${("0" + localDateTime.getUTCDate()).slice(-2)}.${(
     "0" +
     (localDateTime.getUTCMonth() + 1)
   ).slice(-2)}.${localDateTime.getUTCFullYear()}`;
 
-  const formattedTime = `${("0" + localDateTime.getUTCHours()).slice(-2)}.${(
+  const formattedTime = `${("0" + localDateTime.getUTCHours()).slice(-2)}:${(
     "0" + localDateTime.getUTCMinutes()
   ).slice(-2)}`;
 
