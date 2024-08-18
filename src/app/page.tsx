@@ -94,7 +94,9 @@ export default async function Home() {
  * @throws {Error} If fetching the data fails or if the data format is invalid.
  */
 async function getRaceScheduleData(): Promise<Race[]> {
-  const res = await fetch("https://ergast.com/api/f1/current.json");
+  const res = await fetch("https://ergast.com/api/f1/current.json", {
+    cache: "no-store",
+  });
   if (!res.ok) {
     throw new Error("Failed to fetch race data");
   }
