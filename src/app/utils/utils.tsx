@@ -26,33 +26,53 @@ export function getNextRaceIndex(races: Race[]): number {
 }
 
 /**
- * Formats the date and time of a race.
- * @param {string} date - The date of the race.
- * @param {string} time - The time of the race.
- * @returns {Object} An object containing the formatted date and time.
+ * Formats a UTC date string to a more readable format.
+ * @param utcDate The UTC date string to format.
+ * @returns The formatted date string.
  */
-export function formatDateTime(date: string, time: string): any {
-  const utcDateTime = new Date(`${date}T${time}`);
+export function formatDate(utcDate: string): string {
+  const localDate = new Date(utcDate);
 
-  // Check if the date is greater than or equal to October 27th when clocks are turned
-  const isAfterClockChange =
-    utcDateTime >= new Date(`${utcDateTime.getUTCFullYear()}-10-27T00:00:00`);
+  const day = localDate.getDate();
+  const month = localDate.getMonth() + 1;
+  const year = localDate.getFullYear();
 
-  // Adjust the offset accordingly
-  const offset = isAfterClockChange ? 2 : 3;
+  const weekdays = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
 
-  const localDateTime = new Date(
-    utcDateTime.getTime() + offset * 60 * 60 * 1000
-  );
+  const weekdayName = weekdays[localDate.getDay()];
 
-  const formattedDate = `${("0" + localDateTime.getUTCDate()).slice(-2)}/${(
-    "0" +
-    (localDateTime.getUTCMonth() + 1)
-  ).slice(-2)}/${localDateTime.getUTCFullYear()}`;
+  const formattedDay = day.toString().padStart(2, "0");
+  const formattedMonth = month.toString().padStart(2, "0");
 
-  const formattedTime = `${("0" + localDateTime.getUTCHours()).slice(-2)}:${(
-    "0" + localDateTime.getUTCMinutes()
-  ).slice(-2)}`;
+  return `${weekdayName} ${formattedDay}/${formattedMonth}/${year}`;
+}
 
-  return { date: formattedDate, time: formattedTime };
+/**
+ * Formats a time string to a more readable format in the user's locale.
+ * @param time The time string to format.
+ * @returns The formatted time string.
+ */
+export function formatTime(time: string): any {
+  const fullTime = `2025-03-16T${time}`;
+
+  const date = new Date(fullTime);
+
+  if (isNaN(date.getTime())) {
+    return null;
+  }
+
+  const options: Intl.DateTimeFormatOptions = {
+    hour: "2-digit",
+    minute: "2-digit",
+  };
+
+  return date.toLocaleTimeString([], options);
 }

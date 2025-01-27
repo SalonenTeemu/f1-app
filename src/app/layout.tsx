@@ -5,8 +5,8 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "F1 Race Schedule App",
-  description: "Application for viewing Formula 1 race schedule",
+  title: "Formula 1 App",
+  description: "Application for viewing Formula 1 race schedule and standings",
 };
 
 export default function RootLayout({

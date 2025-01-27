@@ -1,11 +1,13 @@
-# f1-race-schedule-app
+# f1-app
 
-This is a simple Formula 1 race schedule application build with Next.js. The app shows 2024 season race dates, times and locations. The app also shows which races have already been finished, what race is coming next and the races upcoming later in the season. The application uses [Ergast API](https://ergast.com/mrd) to fetch the race schedule data.
+This is a simple Formula 1 application build with Next.js. The app shows the race schedule, driver standings and the constructor standings of the current season. The app shows which races have already been finished, what race is coming next and the races upcoming later in the season. The application uses [jolpica-f1 API](https://github.com/jolpica/jolpica-f1?tab=readme-ov-file) to fetch the data.
 
 ## Running the application
 
 Run the app with `npm install` and `npm run dev` in the project root directory.
 
+Open the application in a browser at: `http://localhost:3000/`
+
 ### Note
 
-[The Ergast API](https://ergast.com/mrd) is deprecated and will only be updated until the end of the 2024 season so sadly the application will not work after 2024.
+The driver and constructor standings might not work before the start of the season so those pages will likely give an error.
