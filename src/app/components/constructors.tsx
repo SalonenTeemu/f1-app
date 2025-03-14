@@ -22,11 +22,11 @@ export default async function Constructors() {
   }
 
   if (error) {
-    return <div className="text-slate-50">Error: {error}</div>;
+    return <div className="text-center text-slate-50">Error: {error}</div>;
   }
 
   if (!constructorData || constructorData.length === 0) {
-    return <div className="text-slate-50">No standings found</div>;
+    return <div className="text-center text-slate-50">No standings found</div>;
   }
 
   return (

@@ -4,6 +4,8 @@ This is a simple Formula 1 application build with Next.js. The app shows the rac
 
 ## Running the application
 
+The application can be tested on my [homepage](https://salonenteemu.fi/projects/f1-app) as it is one of the projects there.
+
 Run the app with `npm install` and `npm run dev` in the project root directory.
 
 Open the application in a browser at: `http://localhost:3000/`

@@ -19,11 +19,11 @@ export default async function Drivers() {
   }
 
   if (error) {
-    return <div className="text-slate-50">Error: {error}</div>;
+    return <div className="text-center text-slate-50">Error: {error}</div>;
   }
 
   if (!driverData || driverData.length === 0) {
-    return <div className="text-slate-50">No standings found</div>;
+    return <div className="text-center text-slate-50">No standings found</div>;
   }
 
   return (
